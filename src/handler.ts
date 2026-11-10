@@ -68,6 +68,8 @@ export async function handler(event: LambdaFunctionURLEvent): Promise<LambdaFunc
   const q = event.queryStringParameters ?? {};
   if (!tokenOk(q.token)) return { statusCode: 404 };
   const isTodoist = q.source === 'todoist';
+  // One line per fetch, to see how often each calendar refreshes
+  console.log('fetch', isTodoist ? 'todoist' : 'linear', event.headers?.['user-agent']);
   if (isTodoist && !process.env.TODOIST_API_TOKEN) return { statusCode: 404 };
 
   const items = await (isTodoist ? todoist() : linear());
