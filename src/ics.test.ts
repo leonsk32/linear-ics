@@ -22,4 +22,5 @@ test('overdue issues move to today (JST)', () => {
   assert.match(ics, /DTSTART;VALUE=DATE:20260925\r\n/);
   assert.match(ics, /SUMMARY:⚠️\[ENG-1\] t\r\n/);
   assert.match(ics, /DESCRIPTION:期限超過（期限 2026-09-01）\\n/);
+  assert.match(ics.replace(/\r\n /g, ''), /取得 2026-09-25 01:00 JST\r\n/);
 });

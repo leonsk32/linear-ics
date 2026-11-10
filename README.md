@@ -8,6 +8,8 @@ Event titles start with the issue's priority: 🔴 Urgent, 🟠 High, 🟡 Mediu
 
 Overdue issues appear on today (JST) instead of their due date, with ⚠️ at the start of the title and the original due date in the description.
 
+Each event's description ends with the time (JST) the feed was fetched, so you can tell how stale the calendar is.
+
 ## Prerequisites
 
 - Node.js 24+

@@ -30,7 +30,8 @@ export function toIcs(issues: Issue[], now = new Date()): string {
     'X-WR-CALNAME:Linear 期限',
   ];
   // ponytail: "today" is fixed to JST, make it configurable if anyone outside Japan uses this
-  const today = now.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' }); // YYYY-MM-DD
+  const fetched = now.toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 16); // YYYY-MM-DD HH:MM
+  const today = fetched.slice(0, 10);
   for (const i of issues) {
     // Overdue issues are pinned to today so they can't be missed
     const overdue = i.dueDate < today;
@@ -45,7 +46,7 @@ export function toIcs(issues: Issue[], now = new Date()): string {
       `DTEND;VALUE=DATE:${ymd(end.toISOString().slice(0, 10))}`,
       `SUMMARY:${esc(`${overdue ? '⚠️' : ''}${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
       `URL:${i.url}`,
-      `DESCRIPTION:${esc(overdue ? `期限超過（期限 ${i.dueDate}）\n${i.url}` : i.url)}`,
+      `DESCRIPTION:${esc(`${overdue ? `期限超過（期限 ${i.dueDate}）\n` : ''}${i.url}\n取得 ${fetched} JST`)}`,
       'END:VEVENT',
     );
   }
