@@ -6,6 +6,8 @@ Every time the feed is fetched, it pulls all of your open issues that have a due
 
 Event titles start with the issue's priority: 🔴 Urgent, 🟠 High, 🟡 Medium, 🔵 Low (none for No priority).
 
+Overdue issues appear on today (JST) instead of their due date, with the title prefixed by `⚠️期限超過(MM/DD)`.
+
 ## Prerequisites
 
 - Node.js 24+

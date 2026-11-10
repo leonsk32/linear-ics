@@ -13,3 +13,12 @@ test('toIcs', () => {
   assert.match(ics, /SUMMARY:🔴 \[ENG-1\] a\\, b\\; c/);
   for (const l of ics.split('\r\n')) assert.ok(Buffer.byteLength(l) <= 75, l);
 });
+
+test('overdue issues move to today (JST)', () => {
+  const ics = toIcs(
+    [{ id: 'abc', identifier: 'ENG-1', title: 't', dueDate: '2026-09-01', url: 'https://linear.app/x', priority: 0 }],
+    new Date('2026-09-24T16:00:00Z'), // 2026-09-25 01:00 JST
+  );
+  assert.match(ics, /DTSTART;VALUE=DATE:20260925\r\n/);
+  assert.match(ics, /SUMMARY:⚠️期限超過\(09\/01\) \[ENG-1\] t/);
+});

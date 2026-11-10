@@ -29,16 +29,21 @@ export function toIcs(issues: Issue[], now = new Date()): string {
     'CALSCALE:GREGORIAN',
     'X-WR-CALNAME:Linear 期限',
   ];
+  // ponytail: "today" is fixed to JST, make it configurable if anyone outside Japan uses this
+  const today = now.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' }); // YYYY-MM-DD
   for (const i of issues) {
-    const end = new Date(`${i.dueDate}T00:00:00Z`);
+    // Overdue issues are pinned to today so they can't be missed
+    const overdue = i.dueDate < today;
+    const day = overdue ? today : i.dueDate;
+    const end = new Date(`${day}T00:00:00Z`);
     end.setUTCDate(end.getUTCDate() + 1);
     lines.push(
       'BEGIN:VEVENT',
       `UID:${i.id}@linear-ics`,
       `DTSTAMP:${stamp}`,
-      `DTSTART;VALUE=DATE:${ymd(i.dueDate)}`,
+      `DTSTART;VALUE=DATE:${ymd(day)}`,
       `DTEND;VALUE=DATE:${ymd(end.toISOString().slice(0, 10))}`,
-      `SUMMARY:${esc(`${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
+      `SUMMARY:${esc(`${overdue ? `⚠️期限超過(${i.dueDate.slice(5).replace('-', '/')}) ` : ''}${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
       `URL:${i.url}`,
       `DESCRIPTION:${esc(i.url)}`,
       'END:VEVENT',
