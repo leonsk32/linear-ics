@@ -10,6 +10,10 @@ Overdue issues appear on today (JST) instead of their due date, with ⚠️ at t
 
 Each event's description ends with the time (JST) the feed was fetched, so you can tell how stale the calendar is.
 
+### Todoist
+
+Set `TODOIST_API_TOKEN` to also serve a Todoist feed (all open tasks with a due date) with the same overdue and priority handling. Tasks with a time are shown as all-day events. Priority maps p1 🔴, p2 🟠, p3 🟡, p4 none. After deploying, subscribe to the `TodoistSubscribeUrl` output as a separate calendar.
+
 ## Prerequisites
 
 - Node.js 24+
@@ -31,6 +35,7 @@ Each event's description ends with the time (JST) the feed was fetched, so you c
    ```
 
    - `LINEAR_API_KEY`: create one in Linear → Settings → Security & access → Personal API keys. The **Read** permission is enough. If you limit team access, only issues from those teams appear.
+   - `TODOIST_API_TOKEN` (optional): Todoist → Settings → Integrations → Developer → API token.
    - `FEED_TOKEN`: a random secret, e.g. `openssl rand -hex 24`
 
 3. Bootstrap CDK (only once per account/region):

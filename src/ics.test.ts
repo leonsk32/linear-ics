@@ -24,3 +24,9 @@ test('overdue issues move to today (JST)', () => {
   assert.match(ics, /DESCRIPTION:期限超過（期限 2026-09-01）\\n/);
   assert.match(ics.replace(/\r\n /g, ''), /取得 2026-09-25 01:00 JST\r\n/);
 });
+
+test('calendar name and items without an identifier', () => {
+  const ics = toIcs([{ id: 'x', title: 't', dueDate: '2099-01-01', url: 'u', priority: 2 }], new Date(), 'Todoist 期限');
+  assert.match(ics, /X-WR-CALNAME:Todoist 期限\r\n/);
+  assert.match(ics, /SUMMARY:🟠 t\r\n/);
+});

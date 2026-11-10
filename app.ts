@@ -3,7 +3,7 @@ import { FunctionUrlAuthType, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 
-const { LINEAR_API_KEY, FEED_TOKEN, OWNER } = process.env;
+const { LINEAR_API_KEY, FEED_TOKEN, OWNER, TODOIST_API_TOKEN } = process.env;
 if (!LINEAR_API_KEY || !FEED_TOKEN) throw new Error('LINEAR_API_KEY and FEED_TOKEN are required');
 
 const app = new App();
@@ -15,10 +15,11 @@ const fn = new NodejsFunction(stack, 'Feed', {
   entry: 'src/handler.ts',
   runtime: Runtime.NODEJS_24_X,
   timeout: Duration.seconds(15),
-  environment: { LINEAR_API_KEY, FEED_TOKEN },
+  environment: { LINEAR_API_KEY, FEED_TOKEN, ...(TODOIST_API_TOKEN && { TODOIST_API_TOKEN }) },
   // Own the log group so it gets the owner tag; the auto-created one is untagged
   logGroup: new LogGroup(stack, 'FeedLogs', { retention: RetentionDays.ONE_MONTH, removalPolicy: RemovalPolicy.DESTROY }),
 });
 const url = fn.addFunctionUrl({ authType: FunctionUrlAuthType.NONE });
 
 new CfnOutput(stack, 'SubscribeUrl', { value: `${url.url}?token=${FEED_TOKEN}` });
+if (TODOIST_API_TOKEN) new CfnOutput(stack, 'TodoistSubscribeUrl', { value: `${url.url}?token=${FEED_TOKEN}&source=todoist` });

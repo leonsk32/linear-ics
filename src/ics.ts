@@ -1,4 +1,4 @@
-export type Issue = { id: string; identifier: string; title: string; dueDate: string; url: string; priority: number };
+export type Issue = { id: string; identifier?: string; title: string; dueDate: string; url: string; priority: number };
 
 // Linear priority: 0 none, 1 urgent, 2 high, 3 medium, 4 low
 const PRIORITY = ['', '🔴 ', '🟠 ', '🟡 ', '🔵 '];
@@ -20,14 +20,14 @@ function fold(line: string): string {
   return [...out, cur].join('\r\n');
 }
 
-export function toIcs(issues: Issue[], now = new Date()): string {
+export function toIcs(issues: Issue[], now = new Date(), calName = 'Linear 期限'): string {
   const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//linear-ics//EN',
     'CALSCALE:GREGORIAN',
-    'X-WR-CALNAME:Linear 期限',
+    `X-WR-CALNAME:${esc(calName)}`,
   ];
   // ponytail: "today" is fixed to JST, make it configurable if anyone outside Japan uses this
   const fetched = now.toLocaleString('sv-SE', { timeZone: 'Asia/Tokyo' }).slice(0, 16); // YYYY-MM-DD HH:MM
@@ -44,7 +44,7 @@ export function toIcs(issues: Issue[], now = new Date()): string {
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${ymd(day)}`,
       `DTEND;VALUE=DATE:${ymd(end.toISOString().slice(0, 10))}`,
-      `SUMMARY:${esc(`${overdue ? '⚠️' : ''}${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
+      `SUMMARY:${esc(`${overdue ? '⚠️' : ''}${PRIORITY[i.priority] ?? ''}${i.identifier ? `[${i.identifier}] ` : ''}${i.title}`)}`,
       `URL:${i.url}`,
       `DESCRIPTION:${esc(`${overdue ? `期限超過（期限 ${i.dueDate}）\n` : ''}${i.url}\n取得 ${fetched} JST`)}`,
       'END:VEVENT',
