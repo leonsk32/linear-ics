@@ -1,4 +1,7 @@
-export type Issue = { id: string; identifier: string; title: string; dueDate: string; url: string };
+export type Issue = { id: string; identifier: string; title: string; dueDate: string; url: string; priority: number };
+
+// Linear priority: 0 none, 1 urgent, 2 high, 3 medium, 4 low
+const PRIORITY = ['', '🔴 ', '🟠 ', '🟡 ', '🔵 '];
 
 const esc = (s: string) => s.replace(/[\\;,]/g, (c) => `\\${c}`).replace(/\r?\n/g, '\\n');
 const ymd = (d: string) => d.replaceAll('-', '');
@@ -35,7 +38,7 @@ export function toIcs(issues: Issue[], now = new Date()): string {
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${ymd(i.dueDate)}`,
       `DTEND;VALUE=DATE:${ymd(end.toISOString().slice(0, 10))}`,
-      `SUMMARY:${esc(`[${i.identifier}] ${i.title}`)}`,
+      `SUMMARY:${esc(`${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
       `URL:${i.url}`,
       `DESCRIPTION:${esc(i.url)}`,
       'END:VEVENT',

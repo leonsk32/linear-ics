@@ -8,7 +8,7 @@ const QUERY = `{
     assignedIssues(first: 250, filter: {
       dueDate: { null: false }
       state: { type: { nin: ["completed", "canceled"] } }
-    }) { nodes { id identifier title dueDate url } }
+    }) { nodes { id identifier title dueDate url priority } }
   }
 }`;
 

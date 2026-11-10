@@ -4,6 +4,8 @@ Shows due dates of Linear issues assigned to you in a dedicated Google Calendar,
 
 Every time the feed is fetched, it pulls all of your open issues that have a due date from Linear. Changed or removed due dates and completed or canceled issues therefore update on the calendar's next refresh.
 
+Event titles start with the issue's priority: 🔴 Urgent, 🟠 High, 🟡 Medium, 🔵 Low (none for No priority).
+
 ## Prerequisites
 
 - Node.js 24+
