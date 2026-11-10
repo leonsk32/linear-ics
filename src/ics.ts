@@ -43,9 +43,9 @@ export function toIcs(issues: Issue[], now = new Date()): string {
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${ymd(day)}`,
       `DTEND;VALUE=DATE:${ymd(end.toISOString().slice(0, 10))}`,
-      `SUMMARY:${esc(`${overdue ? `⚠️期限超過(${i.dueDate.slice(5).replace('-', '/')}) ` : ''}${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
+      `SUMMARY:${esc(`${overdue ? '⚠️' : ''}${PRIORITY[i.priority] ?? ''}[${i.identifier}] ${i.title}`)}`,
       `URL:${i.url}`,
-      `DESCRIPTION:${esc(i.url)}`,
+      `DESCRIPTION:${esc(overdue ? `期限超過（期限 ${i.dueDate}）\n${i.url}` : i.url)}`,
       'END:VEVENT',
     );
   }
